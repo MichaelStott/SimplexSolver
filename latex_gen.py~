@@ -1,0 +1,61 @@
+
+
+
+if __name__ == '__main__':
+
+    ''' COMMAND LINE INPUT HANDLING '''
+    A = []
+    b = []
+    c = []
+    argv = sys.argv[1:]    
+    try:
+        opts, args = getopt.getopt(argv,"hA:b:c:",["A=","b=","c="])
+    except getopt.GetoptError:
+        print('simplex.py -A <matrix> -b <vector> -c <vector>')
+        sys.exit(2)
+    for opt, arg in opts:
+        if opt == '-h':
+            print('simplex.py -A <matrix> -b <vector> -c <vector>')
+            print('A: An mxn linear system. i.e. "[[1,0],[0,1]]"')
+            print('b: Vector. Ax <= b')
+            print('c: Vector. Coefficients of objective function.')
+            sys.exit()
+        elif opt in ("-A"):
+            A = ast.literal_eval(arg)
+        elif opt in ("-b"):
+            b = ast.literal_eval(arg)
+        elif opt in ("-c"):
+            c = ast.literal_eval(arg)
+    if not A or not b or not c:
+        print('Must provide arguments for A, b, c (use -h for more info)')
+        sys.exit()
+    ''' END OF COMMAND LINE INPUT HANDLING '''
+
+    ss = SimplexSolver()
+    ss.set_simplex_input(A, b, c)
+    latex_str = (r"\documentclass{article}")
+        
+    latex_str += (r"\begin{document}")
+    latex_str += (r"\title{Simplex Solver}")
+    latex_str += (r"\maketitle")
+    latex_str += (r"\begin{flushleft}")
+    latex_str += (r"\textbf{Problem}")
+    latex_str += (r"\end{flushleft}")
+    latex_str += (r"\begin{flushleft}")
+    latex_str += (r"Given the following linear system and objective function, "
+                  r"find the optimal solution.")
+    latex_str += (r"\end{flushleft}")
+    latex_str = obj_func(latex_str, ss.c)
+    latex_str = eq_from_mat(latex_str, ss.get_Ab())
+
+    latex_str += (r"\begin{flushleft}")
+    latex_str += (r"\textbf{Solution}")
+    latex_str += (r"\end{flushleft}")
+    
+    ss.create_tableau()
+    #print("2. Create Simplex Tableau")
+    #print(ss._str_matrix(ss.A))
+
+    latex_str += (r"\end{document}")
+    pdf = build_pdf(latex_str)
+    pdf.save_to('solution.pdf')
