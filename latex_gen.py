@@ -46,7 +46,7 @@ def eq_from_mat(latex_str, A):
         found_value = False
         for index, x in enumerate(A[i]):
             opp = '+'
-            if x == 0:
+            if x == 0 and index != len(A[i]) - 1:
                 continue
             if x < 0:
                 opp = '-'
@@ -105,11 +105,13 @@ if __name__ == '__main__':
                 (r"\end{flushleft}")
 
     latex_str += (r"\begin{flushleft}")
-    latex_str += (r"First, add slack and artificial variables to turn "
+    latex_str += (r"Add slack and artificial variables to turn "
                   r"all inequalities to equalities.")
     latex_str += (r"\end{flushleft}")
     latex_str = eq_from_mat(latex_str, ss.tableau)
-
+    latex_str += (r"\begin{flushleft}")
+    latex_str += (r"Thus, the initial tableau is as follows.")
+    latex_str += (r"\end{flushleft}")
     
     latex_str += (r"\end{document}")
     pdf = build_pdf(latex_str)

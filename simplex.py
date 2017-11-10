@@ -1,4 +1,5 @@
 import ast, getopt, sys, copy, os
+from fractions import Fraction
 clear = lambda: os.system('cls' if os.name == 'nt' else 'clear')
 
 class SimplexSolver():
@@ -14,9 +15,10 @@ class SimplexSolver():
     def set_simplex_input(self, A, b, c):
         ''' Set initial variables and create tableau.
         '''
-        self.A = A
-        self.b = b
-        self.c = c
+        for a in A:
+            self.A.append([Fraction(x) for x in a])
+        self.b = [Fraction(x) for x in b]
+        self.c = [Fraction(x) for x in c]
         self.create_tableau()
 
     def add_slack_variables(self):
@@ -33,9 +35,10 @@ class SimplexSolver():
         '''
         self.tableau = copy.deepcopy(self.A)
         self.add_slack_variables()
-        for index, value in enumerate(self.c):
-            self.c[index] = -value
-        self.tableau.append(self.c + [0] * (len(self.c)+1))
+        c = copy.deepcopy(self.c)
+        for index, value in enumerate(c):
+            c[index] = -value
+        self.tableau.append(c + [0] * (len(c)+1))
 
     def find_pivot(self):
         ''' Find pivot index.
@@ -45,27 +48,33 @@ class SimplexSolver():
         return [enter_index, depart_index]
 
     def pivot(self, pivot_index):
+        ''' Perform operations on pivot.
+        '''
         i, j = pivot_index
 
-        pivotDenom = self.tableau[i][j]
-        self.tableau[i] = [x / pivotDenom for x in self.tableau[i]]
-
-        for k,row in enumerate(self.tableau):
-           if k != i:
-              pivotRowMultiple = [y * self.tableau[k][j] for y in self.tableau[i]]
-              self.tableau[k] = [x - y for x,y in zip(self.tableau[k], pivotRowMultiple)]
+        pivot = self.tableau[i][j]
+        self.tableau[i] = [element / pivot for
+                           element in self.tableau[i]]
+        for index, row in enumerate(self.tableau):
+           if index != i:
+              row_scale = [y * self.tableau[index][j]
+                          for y in self.tableau[i]]
+              self.tableau[index] = [x - y for x,y in
+                                     zip(self.tableau[index],
+                                         row_scale)]
         
     def get_entering_var(self):
         ''' Get entering variable by determining the 'most negative'
             element.
         '''
         bottom_row = self.tableau[len(self.tableau) - 1]
+        print("BOTTOM ROW: %s" % str(bottom_row))
         most_neg_ind = 0
-        most_neg = bottom_row[0]
+        most_neg = bottom_row[most_neg_ind]
         for index, value in enumerate(bottom_row):
-            if value < most_neg_ind:
+            if value < most_neg:
                 most_neg = value
-                most_neg_index = index
+                most_neg_ind = index
         return most_neg_ind
             
 
@@ -80,13 +89,13 @@ class SimplexSolver():
             if x[entering_index] > 0:
                 skip = index
                 min_ratio_index = index
-                min_ratio = x[len(x)-1]/float(x[entering_index])
+                min_ratio = x[len(x)-1]/x[entering_index]
                 break
         
         if min_ratio > 0:
             for index, x in enumerate(self.tableau):
                 if index > skip and x[entering_index] > 0:
-                    ratio = x[len(x)-1]/float(x[entering_index])
+                    ratio = x[len(x)-1]/x[entering_index]
                     if min_ratio > ratio:
                         min_ratio = ratio
                         min_ratio_index = index
@@ -95,7 +104,7 @@ class SimplexSolver():
             
 
     def get_Ab(self):
-        ''' 
+        ''' Get A matrix with b vector appended.
         '''
         matrix = copy.deepcopy(self.A)
         for i in range(0, len(matrix)):
@@ -103,7 +112,9 @@ class SimplexSolver():
         return matrix
 
     def should_terminate(self):
-        # Check bottom row for negative values.
+        ''' Determines whether there are any negative elements
+            on the bottom row
+        '''
         result = True
         index = len(ss.tableau) - 1
         for i, x in enumerate(ss.tableau[index]):
@@ -130,7 +141,7 @@ class SimplexSolver():
         '''
         for row in M:
             for val in row:
-                print '{:4}'.format(val),
+                print '{:6}'.format(val),
             print
 
 if __name__ == '__main__':
@@ -185,6 +196,12 @@ if __name__ == '__main__':
         # Get the pivot element.
         print("\nFind pivot for this iteration.")
         pivot = ss.find_pivot()
+
+        if ss.tableau[pivot[0]][pivot[1]] == 0:
+            print ("Zero pivot detected.")
+            print ("Solution is infeasible.")
+            sys.exit(0)
+        
         print("Pivot: %s" % str(pivot))
         prompt()
 
