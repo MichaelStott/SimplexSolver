@@ -1,9 +1,10 @@
 import ast, getopt, sys, copy, os
 from fractions import Fraction
+
 clear = lambda: os.system('cls' if os.name == 'nt' else 'clear')
 
 class SimplexSolver():
-    ''' Solves linear programs that are in standard form.
+    ''' Solves standard form linear programs using Simplex.
     '''
     
     def __init__(self):
@@ -68,7 +69,6 @@ class SimplexSolver():
             element.
         '''
         bottom_row = self.tableau[len(self.tableau) - 1]
-        print("BOTTOM ROW: %s" % str(bottom_row))
         most_neg_ind = 0
         most_neg = bottom_row[most_neg_ind]
         for index, value in enumerate(bottom_row):
@@ -140,9 +140,10 @@ class SimplexSolver():
         ''' Generate string representation of some matrix M.
         '''
         for row in M:
+            print '|',
             for val in row:
-                print '{:6}'.format(val),
-            print
+                print '{:^5}'.format(str(val)),
+            print '|'
 
 if __name__ == '__main__':
     clear()
@@ -191,10 +192,10 @@ if __name__ == '__main__':
     while (not ss.should_terminate()):
         # ... if so, continue.
         print("\nThere are negative elements in the bottom row. "
-              "Therefore, the algorithm will continue.\n")
+              "Therefore, the algorithm will continue...\n")
 
         # Get the pivot element.
-        print("\nFind pivot for this iteration.")
+        print("Find pivot for this iteration.")
         pivot = ss.find_pivot()
 
         if ss.tableau[pivot[0]][pivot[1]] == 0:
@@ -210,6 +211,4 @@ if __name__ == '__main__':
         ss.pivot(pivot)
         ss._str_matrix(ss.tableau)
         prompt()
-        # For readability, clear the current console output.
-        clear()
-    print("That's all folks!")
+    print("\nThat's all folks!")
