@@ -3,8 +3,9 @@ from fractions import Fraction
 
 clear = lambda: os.system('cls' if os.name == 'nt' else 'clear')
 
+
 class SimplexSolver():
-    ''' Solves standard form linear programs using Simplex.
+    ''' Solves linear programs using Simplex.
     '''
     
     def __init__(self):
@@ -12,15 +13,73 @@ class SimplexSolver():
         self.b = []
         self.c = []
         self.tableau = []
+        self.entering = []
+        self.departing = []
 
+    def run_simplex(self, A, b, c, prob='max', enable_msg=False, latex=False):
+        ''' Run simplex algorithm.
+        '''
+        # Add slack & artificial variables
+        self.set_simplex_input(A, b, c)
+        if(enable_msg):
+            clear()
+            print("Create initial tableau.")
+            self._print_tableau()
+            print(self.get_current_solution())
+            self._prompt()
+
+        # Are there any negative elements on the bottom (disregarding
+        # right-most element...)
+        while (not self.should_terminate()):
+            # ... if so, continue.
+
+            # Attempt to find a non-negative pivot.
+            pivot = self.find_pivot()
+            if pivot[0] < 0:
+                if (enable_msg):
+                    print ("There exists no non-negative pivot. "
+                           "Thus, the solution is infeasible.")
+                sys.exit(0)
+            else:
+                if (enable_msg):
+                    print("\nThere are negative elements in the bottom row, "
+                          "so the current solution is not optimal. "
+                          "Thus, pivot to improve the current solution. The "
+                          "entering variable is %s and the deparing "
+                          "variable is %s." %
+                           (str(self.entering[pivot[1]]),
+                           str(self.departing[pivot[0]])))
+                    self._prompt()
+                    print("\nPerform elementary row operations until the "
+                          "pivot is one and all other elements in the "
+                          "entering column are zero.")
+
+            # Do row operations to make every other element in column zero.
+            self.pivot(pivot)
+            print(self.get_current_solution())
+            self._print_tableau()
+            self._prompt()
+        return self.get_current_solution()
+        
     def set_simplex_input(self, A, b, c):
         ''' Set initial variables and create tableau.
         '''
+        # Convert all entries to fractions for readability.
         for a in A:
-            self.A.append([Fraction(x) for x in a])
+            self.A.append([Fraction(x) for x in a])    
         self.b = [Fraction(x) for x in b]
         self.c = [Fraction(x) for x in c]
         self.create_tableau()
+
+        # Create tables for entering and departing variables
+        for i in range(0, len(self.tableau[0])):
+            if i < len(self.A[0]):
+                self.entering.append("x%s" % str(i))
+            elif i < len(self.tableau[0]) - 1:
+                self.entering.append("s%s" % str(i - len(self.A[0])))
+                self.departing.append("s%s" % str(i - len(self.A[0])))
+            else:
+                self.entering.append("b")
 
     def add_slack_variables(self):
         ''' Add slack & artificial variables to matrix A to transform
@@ -51,7 +110,7 @@ class SimplexSolver():
     def pivot(self, pivot_index):
         ''' Perform operations on pivot.
         '''
-        i, j = pivot_index
+        j, i = pivot_index
 
         pivot = self.tableau[i][j]
         self.tableau[i] = [element / pivot for
@@ -63,6 +122,8 @@ class SimplexSolver():
               self.tableau[index] = [x - y for x,y in
                                      zip(self.tableau[index],
                                          row_scale)]
+
+        self.departing[i] = self.entering[j]
         
     def get_entering_var(self):
         ''' Get entering variable by determining the 'most negative'
@@ -83,10 +144,10 @@ class SimplexSolver():
             of b (b_i) to the corresponding value in the entering collumn. 
         '''
         skip = 0
-        min_ratio_index = 0
-        min_ratio = -1
+        min_ratio_index = -1
+        min_ratio = 0
         for index, x in enumerate(self.tableau):
-            if x[entering_index] > 0:
+            if x[len(x)-1]/x[entering_index] > 0:
                 skip = index
                 min_ratio_index = index
                 min_ratio = x[len(x)-1]/x[entering_index]
@@ -116,12 +177,27 @@ class SimplexSolver():
             on the bottom row
         '''
         result = True
-        index = len(ss.tableau) - 1
-        for i, x in enumerate(ss.tableau[index]):
-            if x < 0 and i != len(ss.tableau[index]) - 1:
+        index = len(self.tableau) - 1
+        for i, x in enumerate(self.tableau[index]):
+            if x < 0 and i != len(self.tableau[index]) - 1:
                 result = False
         return result
-    
+
+    def get_current_solution(self):
+        ''' Get the current solution from tableau.
+        '''
+        solution = {}
+        for x in self.entering:
+            if x is not 'b':
+                if x in self.departing:
+                    solution[x] = str(self.tableau[self.departing.index(x)]\
+                                  [len(self.tableau[self.departing.index(x)])-1])
+                else:
+                    solution[x] = str(0)
+        solution['opt'] = self.tableau[len(self.tableau) - 1]\
+                          [len(self.tableau[0]) - 1]
+        return solution
+        
     def _generate_identity(self, n):
         ''' Helper function for generating a square identity matrix.
         '''
@@ -136,7 +212,7 @@ class SimplexSolver():
             I.append(row)
         return I
         
-    def _str_matrix(self, M):
+    def _print_matrix(self, M):
         ''' Generate string representation of some matrix M.
         '''
         for row in M:
@@ -145,11 +221,27 @@ class SimplexSolver():
                 print '{:^5}'.format(str(val)),
             print '|'
 
+    def _print_tableau(self):
+        ''' Generate string representation of some matrix M.
+        '''
+        print ' ',
+        for val in self.entering:
+            print '{:^5}'.format(str(val)),
+        print ' '
+        for index, row in enumerate(self.tableau):
+            print '|',
+            for val in row:
+                print '{:^5}'.format(str(val)),
+            if index < len(self.tableau) -1:
+                print '| %s' % self.departing[index]
+            else:
+                print '|'
+
+    def _prompt(self):
+        raw_input("Press enter to continue...")
+
 if __name__ == '__main__':
     clear()
-    
-    def prompt():
-        raw_input("Press enter to continue...")
 
     ''' COMMAND LINE INPUT HANDLING '''
     A = []
@@ -179,36 +271,4 @@ if __name__ == '__main__':
         sys.exit()
     ''' END OF COMMAND LINE INPUT HANDLING '''
 
-    ss = SimplexSolver()
-    ss.set_simplex_input(A, b, c)
-
-    # Add slack & artificial variables
-    print("Create initial tableau.")
-    ss._str_matrix(ss.tableau)
-    prompt()
-
-    # Are there any negative elements on the bottom (disregarding right-most
-    # element...)
-    while (not ss.should_terminate()):
-        # ... if so, continue.
-        print("\nThere are negative elements in the bottom row. "
-              "Therefore, the algorithm will continue...\n")
-
-        # Get the pivot element.
-        print("Find pivot for this iteration.")
-        pivot = ss.find_pivot()
-
-        if ss.tableau[pivot[0]][pivot[1]] == 0:
-            print ("Zero pivot detected.")
-            print ("Solution is infeasible.")
-            sys.exit(0)
-        
-        print("Pivot: %s" % str(pivot))
-        prompt()
-
-        # Do row operations to make every other element in column zero.
-        print("\nDo row operations.")
-        ss.pivot(pivot)
-        ss._str_matrix(ss.tableau)
-        prompt()
-    print("\nThat's all folks!")
+    SimplexSolver().run_simplex(A,b,c,enable_msg=True)
