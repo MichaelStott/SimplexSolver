@@ -39,7 +39,7 @@ class SimplexSolver():
             
             # Attempt to find a non-negative pivot.
             pivot = self.find_pivot()
-            if pivot[0] < 0:
+            if pivot[1] < 0:
                 if (enable_msg):
                     print ("There exists no non-negative pivot. "
                            "Thus, the solution is infeasible.")
@@ -155,7 +155,7 @@ class SimplexSolver():
         min_ratio_index = -1
         min_ratio = 0
         for index, x in enumerate(self.tableau):
-            if x[len(x)-1]/x[entering_index] > 0:
+            if x[entering_index] != 0 and x[len(x)-1]/x[entering_index] > 0:
                 skip = index
                 min_ratio_index = index
                 min_ratio = x[len(x)-1]/x[entering_index]
