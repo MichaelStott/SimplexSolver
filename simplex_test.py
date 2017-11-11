@@ -50,6 +50,16 @@ class SimplexSolverTest(unittest.TestCase):
                                                           [4,6]))
 
     def test_max_feasible3(self):
+        ''' Find optimal solution to max(2x1 - x2 + 2x3) such that:
+            Ax <= b,
+            x1, x2 >= 0,
+            A =  |2 1  0|, b = |10|, c = | 2|
+                 |1 2 -2|      |20|      |-1|
+                 |0 1  2|      | 5|      | 2|
+
+            Source: http://college.cengage.com/mathematics/larson/elementary_linear/4e/shared/downloads/c09s3.pdf
+                    Example 2
+        '''
         self.assertDictEqual({'x0': Fraction(5),
                               'x1': Fraction(0),
                               'x2': Fraction(5,2),
@@ -61,7 +71,7 @@ class SimplexSolverTest(unittest.TestCase):
                                                            [1,2,-2],
                                                            [0,1,2]],
                                                           [10,20,5],
-                                                          [2,-1,2], enable_msg=True))
+                                                          [2,-1,2])
 
 if __name__ == '__main__':
     unittest.main()
