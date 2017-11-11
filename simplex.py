@@ -56,9 +56,10 @@ class SimplexSolver():
 
             # Do row operations to make every other element in column zero.
             self.pivot(pivot)
-            print(self.get_current_solution())
-            self._print_tableau()
-            self._prompt()
+            if (enable_msg):
+                print(self.get_current_solution())
+                self._print_tableau()
+                self._prompt()
         return self.get_current_solution()
         
     def set_simplex_input(self, A, b, c):
@@ -190,10 +191,10 @@ class SimplexSolver():
         for x in self.entering:
             if x is not 'b':
                 if x in self.departing:
-                    solution[x] = str(self.tableau[self.departing.index(x)]\
-                                  [len(self.tableau[self.departing.index(x)])-1])
+                    solution[x] = self.tableau[self.departing.index(x)]\
+                                  [len(self.tableau[self.departing.index(x)])-1]
                 else:
-                    solution[x] = str(0)
+                    solution[x] = 0
         solution['opt'] = self.tableau[len(self.tableau) - 1]\
                           [len(self.tableau[0]) - 1]
         return solution
