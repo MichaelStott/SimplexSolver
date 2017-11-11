@@ -51,8 +51,8 @@ class SimplexSolver():
                           "Thus, pivot to improve the current solution. The "
                           "entering variable is %s and the deparing "
                           "variable is %s.\n" %
-                           (str(self.entering[pivot[1]]),
-                           str(self.departing[pivot[0]])))
+                           (str(self.entering[pivot[0]]),
+                           str(self.departing[pivot[1]])))
                     self._prompt()
                     print("\nPerform elementary row operations until the "
                           "pivot is one and all other elements in the "

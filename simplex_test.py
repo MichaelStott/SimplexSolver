@@ -71,7 +71,58 @@ class SimplexSolverTest(unittest.TestCase):
                                                            [1,2,-2],
                                                            [0,1,2]],
                                                           [10,20,5],
-                                                          [2,-1,2])
+                                                          [2,-1,2]))
+
+    def test_max_feasible4(self):
+        ''' Find optimal solution to max(2x1 - x2 + 2x3) such that:
+            Ax <= b,
+            x1, x2, x3 >= 0,
+            A =  |4 1 1|, b = |30|, c = |3|
+                 |2 3 1|      |60|      |2|
+                 |1 2 3|      |40|      |1|
+
+            Source: http://college.cengage.com/mathematics/larson/elementary_linear/4e/shared/downloads/c09s3.pdf
+                    Example 3
+        '''
+        self.assertDictEqual({'x0': Fraction(3),
+                              'x1': Fraction(18),
+                              'x2': Fraction(0),
+                              's0': Fraction(0),
+                              's1': Fraction(0),
+                              's2': Fraction(1),
+                              'opt': Fraction(45)},
+                              SimplexSolver().run_simplex([[4,1,1],
+                                                           [2,3,1],
+                                                           [1,2,3]],
+                                                          [30,60,40],
+                                                          [3,2,1]))
+
+    def test_max_feasible5(self):
+        ''' Find optimal solution to max(11x1 + 16x2 + 15x3) such that:
+            Ax <= b,
+            x1, x2, x3 >= 0,
+            A =  | 1   2  3/2|, b = |12000|, c = |11|
+                 |2/3 2/3  1 |      | 4600|      |16|
+                 |1/2 1/3 1/2|      | 2400|      |15|
+
+            Source: http://college.cengage.com/mathematics/larson/elementary_linear/4e/shared/downloads/c09s3.pdf
+                    Example 4
+        '''
+        self.assertDictEqual({'x0': Fraction(600),
+                              'x1': Fraction(5100),
+                              'x2': Fraction(800),
+                              's0': Fraction(0),
+                              's1': Fraction(0),
+                              's2': Fraction(0),
+                              'opt': Fraction(100200)},
+                              SimplexSolver().run_simplex([[1,2,Fraction(3,2)],
+                                                           [Fraction(2,3),
+                                                            Fraction(2,3),1],
+                                                           [Fraction(1,2),
+                                                            Fraction(1,3),
+                                                            Fraction(1,2)]],
+                                                          [12000,4600,2400],
+                                                          [11,16,15]))
 
 if __name__ == '__main__':
     unittest.main()
