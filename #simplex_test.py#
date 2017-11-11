@@ -4,7 +4,7 @@ import unittest
 
 class SimplexSolverTest(unittest.TestCase):
 
-    ''' STANDARD FORM EXAMPLES '''
+    ''' STANDARD FORM MAXIMIZATION EXAMPLES '''
     def test_max_feasible1(self):
         ''' Find optimal solution to max(x1 + x2) such that:
             Ax <= b,

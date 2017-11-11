@@ -5,7 +5,7 @@ clear = lambda: os.system('cls' if os.name == 'nt' else 'clear')
 
 
 class SimplexSolver():
-    ''' Solves linear programs using Simplex.
+    ''' Solves linear programs using simplex.
     '''
     
     def __init__(self):
@@ -15,24 +15,28 @@ class SimplexSolver():
         self.tableau = []
         self.entering = []
         self.departing = []
+        self.ineq = []
 
     def run_simplex(self, A, b, c, prob='max', enable_msg=False, latex=False):
         ''' Run simplex algorithm.
         '''
         # Add slack & artificial variables
         self.set_simplex_input(A, b, c)
+        
         if(enable_msg):
             clear()
-            print("Create initial tableau.")
-            self._print_tableau()
-            print(self.get_current_solution())
-            self._prompt()
-
+            
         # Are there any negative elements on the bottom (disregarding
         # right-most element...)
         while (not self.should_terminate()):
             # ... if so, continue.
 
+            if(enable_msg):
+                self._print_tableau()
+                print("Current solution: %s\n" %
+                      str(self.get_current_solution()))
+                self._prompt()
+            
             # Attempt to find a non-negative pivot.
             pivot = self.find_pivot()
             if pivot[0] < 0:
@@ -46,20 +50,23 @@ class SimplexSolver():
                           "so the current solution is not optimal. "
                           "Thus, pivot to improve the current solution. The "
                           "entering variable is %s and the deparing "
-                          "variable is %s." %
+                          "variable is %s.\n" %
                            (str(self.entering[pivot[1]]),
                            str(self.departing[pivot[0]])))
                     self._prompt()
                     print("\nPerform elementary row operations until the "
                           "pivot is one and all other elements in the "
-                          "entering column are zero.")
+                          "entering column are zero.\n")
 
             # Do row operations to make every other element in column zero.
             self.pivot(pivot)
-            if (enable_msg):
-                print(self.get_current_solution())
-                self._print_tableau()
-                self._prompt()
+
+        if (enable_msg):
+            self._print_tableau()
+            print("Current solution: %s\n" %
+                  str(self.get_current_solution()))
+            self._prompt()
+            print("That's all folks!")
         return self.get_current_solution()
         
     def set_simplex_input(self, A, b, c):
@@ -99,7 +106,7 @@ class SimplexSolver():
         c = copy.deepcopy(self.c)
         for index, value in enumerate(c):
             c[index] = -value
-        self.tableau.append(c + [0] * (len(c)+1))
+        self.tableau.append(c + [0] * (len(self.b)+1))
 
     def find_pivot(self):
         ''' Find pivot index.
@@ -111,7 +118,7 @@ class SimplexSolver():
     def pivot(self, pivot_index):
         ''' Perform operations on pivot.
         '''
-        j, i = pivot_index
+        j,i = pivot_index
 
         pivot = self.tableau[i][j]
         self.tableau[i] = [element / pivot for
@@ -229,9 +236,9 @@ class SimplexSolver():
         for val in self.entering:
             print '{:^5}'.format(str(val)),
         print ' '
-        for index, row in enumerate(self.tableau):
+        for row in self.tableau:
             print '|',
-            for val in row:
+            for index, val in enumerate(row):
                 print '{:^5}'.format(str(val)),
             if index < len(self.tableau) -1:
                 print '| %s' % self.departing[index]
@@ -272,4 +279,4 @@ if __name__ == '__main__':
         sys.exit()
     ''' END OF COMMAND LINE INPUT HANDLING '''
 
-    SimplexSolver().run_simplex(A,b,c,enable_msg=True)
+    SimplexSolver().run_simplex(A,b,c,enable_msg=True,latex=True)
