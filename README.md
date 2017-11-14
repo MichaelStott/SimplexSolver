@@ -11,7 +11,7 @@ LaTeX files can be compiled [here].
 
 Consider the following objective function and constraints:
 
-This problem can be solved using the script 
+This problem can be solved using the script:
 ```sh
 $ python simplex.py -A "[[2,1],[1,2]]" -b "[4,3]" -c "[1,1]"
 ```
