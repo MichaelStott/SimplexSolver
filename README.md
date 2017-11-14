@@ -18,6 +18,7 @@ Consider the following objective function and constraints:
   <img src="https://raw.githubusercontent.com/MichaelStott/SimplexSolver/master/img/example1b.png">
 </p>
 This problem can be solved using the script:
+
 ```sh
 $ python simplex.py -A "[[2,1],[1,2]]" -b "[4,3]" -c "[1,1]"
 ```
