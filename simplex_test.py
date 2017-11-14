@@ -124,5 +124,34 @@ class SimplexSolverTest(unittest.TestCase):
                                                           [12000,4600,2400],
                                                           [11,16,15]))
 
+    def test_max_feasible6(self):
+        ''' Find optimal solution to max(11x1 + 16x2 + 15x3) such that:
+            Ax <= b,
+            x1, x2, x3 >= 0,
+            A =  |20  6  3|, b = |182|, c = |100000|
+                 | 0  1  0|      | 10|      | 40000|
+                 |-1 -1  1|      |  0|      | 18000|
+                 |-9  1  1|      |  0|
+
+            Source: http://college.cengage.com/mathematics/larson/elementary_linear/4e/shared/downloads/c09s3.pdf
+                    Example 5
+        '''
+        self.assertDictEqual({'x0': Fraction(4),
+                              'x1': Fraction(10),
+                              'x2': Fraction(14),
+                              's0': Fraction(0),
+                              's1': Fraction(0),
+                              's2': Fraction(0),
+                              's3': Fraction(12),
+                              'opt': Fraction(1052000)},
+                              SimplexSolver().run_simplex([[20,6,3],
+                                                           [0,1,0],
+                                                           [-1,-1,1],
+                                                           [-9,1,1]],
+                                                          [182,10,0,0],
+                                                          [100000,
+                                                           40000,
+                                                           18000]))
+
 if __name__ == '__main__':
     unittest.main()

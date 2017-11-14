@@ -5,7 +5,8 @@ clear = lambda: os.system('cls' if os.name == 'nt' else 'clear')
 
 
 class SimplexSolver():
-    ''' Solves linear programs using simplex.
+    ''' Solves linear programs using simplex-type algorithm and
+        output latex file with steps detailing technique.
     '''
     
     def __init__(self):
@@ -205,6 +206,9 @@ class SimplexSolver():
         solution['opt'] = self.tableau[len(self.tableau) - 1]\
                           [len(self.tableau[0]) - 1]
         return solution
+
+    def translate_to_max_prob(self):
+        pass
         
     def _generate_identity(self, n):
         ''' Helper function for generating a square identity matrix.
