@@ -3,10 +3,9 @@ from fractions import Fraction
 
 clear = lambda: os.system('cls' if os.name == 'nt' else 'clear')
 
-
 class SimplexSolver():
     ''' Solves linear programs using simplex-type algorithm and
-        output latex file with steps detailing technique.
+        output latex file with problem steps.
     '''
     
     def __init__(self):
@@ -17,10 +16,14 @@ class SimplexSolver():
         self.entering = []
         self.departing = []
         self.ineq = []
+        self.prob = 'max'
 
-    def run_simplex(self, A, b, c, prob='max', enable_msg=False, latex=False):
+    def run_simplex(self, A, b, c, prob='max', ineq=[],
+                    enable_msg=False, latex=False):
         ''' Run simplex algorithm.
         '''
+        self.prob = prob
+        
         # Add slack & artificial variables
         self.set_simplex_input(A, b, c)
         
@@ -73,11 +76,27 @@ class SimplexSolver():
     def set_simplex_input(self, A, b, c):
         ''' Set initial variables and create tableau.
         '''
+
+        
         # Convert all entries to fractions for readability.
         for a in A:
             self.A.append([Fraction(x) for x in a])    
         self.b = [Fraction(x) for x in b]
         self.c = [Fraction(x) for x in c]
+
+        # If this is a minimization problem...
+        if self.prob == 'min':
+            # ... find the dual maximum and solve that.
+            m = self.get_Ab()
+            m.append(self.c + [0])
+            m = [list(t) for t in zip(*m)] # Calculates the transpose
+            self.A = [x[:(len(x)-1)] for x in m]
+            self.b = [y[len(y) - 1] for y in m]
+            self.c = m[len(m) -1]
+            self.A.pop()
+            self.b.pop()
+            self.c.pop()
+            
         self.create_tableau()
 
         # Create tables for entering and departing variables
@@ -206,9 +225,6 @@ class SimplexSolver():
         solution['opt'] = self.tableau[len(self.tableau) - 1]\
                           [len(self.tableau[0]) - 1]
         return solution
-
-    def translate_to_max_prob(self):
-        pass
         
     def _generate_identity(self, n):
         ''' Helper function for generating a square identity matrix.
@@ -225,7 +241,7 @@ class SimplexSolver():
         return I
         
     def _print_matrix(self, M):
-        ''' Generate string representation of some matrix M.
+        ''' Print some matrix.
         '''
         for row in M:
             print '|',
@@ -234,18 +250,18 @@ class SimplexSolver():
             print '|'
 
     def _print_tableau(self):
-        ''' Generate string representation of some matrix M.
+        ''' Print simplex tableau.
         '''
         print ' ',
         for val in self.entering:
             print '{:^5}'.format(str(val)),
         print ' '
-        for row in self.tableau:
+        for num, row in enumerate(self.tableau):
             print '|',
             for index, val in enumerate(row):
                 print '{:^5}'.format(str(val)),
-            if index < len(self.tableau) -1:
-                print '| %s' % self.departing[index]
+            if num < (len(self.tableau) -1):
+                print '| %s' % self.departing[num]
             else:
                 print '|'
 
@@ -259,18 +275,20 @@ if __name__ == '__main__':
     A = []
     b = []
     c = []
+    p = ''
     argv = sys.argv[1:]    
     try:
-        opts, args = getopt.getopt(argv,"hA:b:c:",["A=","b=","c="])
+        opts, args = getopt.getopt(argv,"hA:b:c:p:",["A=","b=","c=","p="])
     except getopt.GetoptError:
-        print('simplex.py -A <matrix> -b <vector> -c <vector>')
+        print('simplex.py -A <matrix> -b <vector> -c <vector> -p <type>')
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-h':
             print('simplex.py -A <matrix> -b <vector> -c <vector>')
-            print('A: An mxn linear system. i.e. "[[1,0],[0,1]]"')
-            print('b: Vector. Ax <= b')
-            print('c: Vector. Coefficients of objective function.')
+            print('A: Matrix that represents coefficients of constraints.')
+            print('b: Ax <= b')
+            print('c: Coefficients of objective function.')
+            print('p: max or min objective function.')
             sys.exit()
         elif opt in ("-A"):
             A = ast.literal_eval(arg)
@@ -278,9 +296,15 @@ if __name__ == '__main__':
             b = ast.literal_eval(arg)
         elif opt in ("-c"):
             c = ast.literal_eval(arg)
+        elif opt in ("-p"):
+            p = arg.strip()
     if not A or not b or not c:
         print('Must provide arguments for A, b, c (use -h for more info)')
         sys.exit()
     ''' END OF COMMAND LINE INPUT HANDLING '''
 
-    SimplexSolver().run_simplex(A,b,c,enable_msg=True,latex=True)
+    # Assume maximization problem as default.
+    if p not in ('max', 'min'):
+        p = 'max'
+    
+    SimplexSolver().run_simplex(A,b,c,prob=p,enable_msg=True,latex=True)
