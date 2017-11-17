@@ -3,6 +3,7 @@ from fractions import Fraction
 
 clear = lambda: os.system('cls' if os.name == 'nt' else 'clear')
 
+
 class SimplexSolver():
     ''' Solves linear programs using simplex-type algorithm and
         output latex file with problem steps.
@@ -223,9 +224,6 @@ class SimplexSolver():
         solution['opt'] = self.tableau[len(self.tableau) - 1]\
                           [len(self.tableau[0]) - 1]
         return solution
-
-    def get_min_solution(self):
-        pass
         
     def _generate_identity(self, n):
         ''' Helper function for generating a square identity matrix.
