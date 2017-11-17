@@ -16,10 +16,10 @@ class SimplexSolverTest(unittest.TestCase):
             Source: http://mat.gsia.cmu.edu/classes/QUANT/NOTES/chap7.pdf
                     Example 7.2.1
         '''
-        self.assertDictEqual({'x1': Fraction(5,3),
-                              'x2': Fraction(2,3),
+        self.assertDictEqual({'x0': Fraction(5,3),
+                              'x1': Fraction(2,3),
+                              's0': Fraction(0),
                               's1': Fraction(0),
-                              's2': Fraction(0),
                               'opt': Fraction(7,3)},
                               SimplexSolver().run_simplex([[2,1],
                                                            [1,2]],
@@ -37,11 +37,11 @@ class SimplexSolverTest(unittest.TestCase):
             Source: http://college.cengage.com/mathematics/larson/elementary_linear/4e/shared/downloads/c09s3.pdf
                     Example 1
         '''
-        self.assertDictEqual({'x1': Fraction(15),
-                              'x2': Fraction(12),
-                              's1': Fraction(14),
+        self.assertDictEqual({'x0': Fraction(15),
+                              'x1': Fraction(12),
+                              's0': Fraction(14),
+                              's1': Fraction(0),
                               's2': Fraction(0),
-                              's3': Fraction(0),
                               'opt': Fraction(132)},
                               SimplexSolver().run_simplex([[-1,1],
                                                            [1,1],
@@ -60,12 +60,12 @@ class SimplexSolverTest(unittest.TestCase):
             Source: http://college.cengage.com/mathematics/larson/elementary_linear/4e/shared/downloads/c09s3.pdf
                     Example 2
         '''
-        self.assertDictEqual({'x1': Fraction(5),
-                              'x2': Fraction(0),
-                              'x3': Fraction(5,2),
-                              's1': Fraction(0),
-                              's2': Fraction(20),
-                              's3': Fraction(0),
+        self.assertDictEqual({'x0': Fraction(5),
+                              'x1': Fraction(0),
+                              'x2': Fraction(5,2),
+                              's0': Fraction(0),
+                              's1': Fraction(20),
+                              's2': Fraction(0),
                               'opt': Fraction(15)},
                               SimplexSolver().run_simplex([[2,1,0],
                                                            [1,2,-2],
@@ -84,12 +84,12 @@ class SimplexSolverTest(unittest.TestCase):
             Source: http://college.cengage.com/mathematics/larson/elementary_linear/4e/shared/downloads/c09s3.pdf
                     Example 3
         '''
-        self.assertDictEqual({'x1': Fraction(3),
-                              'x2': Fraction(18),
-                              'x3': Fraction(0),
+        self.assertDictEqual({'x0': Fraction(3),
+                              'x1': Fraction(18),
+                              'x2': Fraction(0),
+                              's0': Fraction(0),
                               's1': Fraction(0),
-                              's2': Fraction(0),
-                              's3': Fraction(1),
+                              's2': Fraction(1),
                               'opt': Fraction(45)},
                               SimplexSolver().run_simplex([[4,1,1],
                                                            [2,3,1],
@@ -108,12 +108,12 @@ class SimplexSolverTest(unittest.TestCase):
             Source: http://college.cengage.com/mathematics/larson/elementary_linear/4e/shared/downloads/c09s3.pdf
                     Example 4
         '''
-        self.assertDictEqual({'x1': Fraction(600),
-                              'x2': Fraction(5100),
-                              'x3': Fraction(800),
+        self.assertDictEqual({'x0': Fraction(600),
+                              'x1': Fraction(5100),
+                              'x2': Fraction(800),
+                              's0': Fraction(0),
                               's1': Fraction(0),
                               's2': Fraction(0),
-                              's3': Fraction(0),
                               'opt': Fraction(100200)},
                               SimplexSolver().run_simplex([[1,2,Fraction(3,2)],
                                                            [Fraction(2,3),
@@ -136,13 +136,13 @@ class SimplexSolverTest(unittest.TestCase):
             Source: http://college.cengage.com/mathematics/larson/elementary_linear/4e/shared/downloads/c09s3.pdf
                     Example 5
         '''
-        self.assertDictEqual({'x1': Fraction(4),
-                              'x2': Fraction(10),
-                              'x3': Fraction(14),
+        self.assertDictEqual({'x0': Fraction(4),
+                              'x1': Fraction(10),
+                              'x2': Fraction(14),
+                              's0': Fraction(0),
                               's1': Fraction(0),
                               's2': Fraction(0),
-                              's3': Fraction(0),
-                              's4': Fraction(12),
+                              's3': Fraction(12),
                               'opt': Fraction(1052000)},
                               SimplexSolver().run_simplex([[20,6,3],
                                                            [0,1,0],

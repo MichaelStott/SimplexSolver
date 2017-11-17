@@ -64,7 +64,7 @@ class SimplexSolver():
             # Do row operations to make every other element in column zero.
             self.pivot(pivot)
 
-        solution = self.get_current_solution() if self.prob == 'max' else\
+        solution = self.get_curent_solution() if self.prob == 'max' else\
                    self.get_min_solution()
         if (enable_msg):
             self._print_tableau()
@@ -100,10 +100,10 @@ class SimplexSolver():
         # Create tables for entering and departing variables
         for i in range(0, len(self.tableau[0])):
             if i < len(self.A[0]):
-                self.entering.append("x%s" % str(i + 1))
+                self.entering.append("x%s" % str(i))
             elif i < len(self.tableau[0]) - 1:
-                self.entering.append("s%s" % str(i + 1 - len(self.A[0])))
-                self.departing.append("s%s" % str(i + 1 - len(self.A[0])))
+                self.entering.append("s%s" % str(i - len(self.A[0])))
+                self.departing.append("s%s" % str(i - len(self.A[0])))
             else:
                 self.entering.append("b")
 
