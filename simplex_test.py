@@ -153,5 +153,8 @@ class SimplexSolverTest(unittest.TestCase):
                                                            40000,
                                                            18000]))
 
+    def test_min_feasible1(self):
+        pass
+
 if __name__ == '__main__':
     unittest.main()
