@@ -5,8 +5,8 @@ clear = lambda: os.system('cls' if os.name == 'nt' else 'clear')
 
 
 class SimplexSolver():
-    ''' Solves linear programs using simplex algorithm and
-        output problem steps in LaTeX file.
+    ''' Solves linear programs using simplex-type algorithm and
+        output latex file with problem steps.
     '''
     
     def __init__(self):
@@ -65,7 +65,8 @@ class SimplexSolver():
             # Do row operations to make every other element in column zero.
             self.pivot(pivot)
 
-        solution = self.get_current_solution()
+        solution = self.get_current_solution() if self.prob == 'max' else\
+                   self.get_min_solution()
         if (enable_msg):
             self._print_tableau()
             print("Current solution: %s\n" % str(solution))
@@ -100,8 +101,7 @@ class SimplexSolver():
         # Create tables for entering and departing variables
         for i in range(0, len(self.tableau[0])):
             if i < len(self.A[0]):
-                prefix = 'x' if self.prob == 'max' else 'y'
-                self.entering.append("%s%s" % (prefix, str(i + 1)))
+                self.entering.append("x%s" % str(i + 1))
             elif i < len(self.tableau[0]) - 1:
                 self.entering.append("s%s" % str(i + 1 - len(self.A[0])))
                 self.departing.append("s%s" % str(i + 1 - len(self.A[0])))
@@ -154,7 +154,7 @@ class SimplexSolver():
         
     def get_entering_var(self):
         ''' Get entering variable by determining the 'most negative'
-            element of the bottom row.
+            element.
         '''
         bottom_row = self.tableau[len(self.tableau) - 1]
         most_neg_ind = 0
@@ -167,7 +167,7 @@ class SimplexSolver():
             
 
     def get_departing_var(self, entering_index):
-        ''' To calculate the departing variable, get the minimum of the ratio
+        ''' To calculate the departing variable, get them minimum of the ratio
             of b (b_i) to the corresponding value in the entering collumn. 
         '''
         skip = 0
@@ -223,16 +223,6 @@ class SimplexSolver():
                     solution[x] = 0
         solution['opt'] = self.tableau[len(self.tableau) - 1]\
                           [len(self.tableau[0]) - 1]
-        
-        # If this is a minimization problem...
-        if (self.prob == 'min'):
-            # ... then get x_1, ..., x_n  from last element of
-            # the slack columns.
-            bottom_row = self.tableau[len(self.tableau) - 1]
-            for v in self.entering:
-                if 's' in v:
-                    solution[v.replace('s', 'x')] = bottom_row[self.entering.index(v)]    
-
         return solution
         
     def _generate_identity(self, n):
