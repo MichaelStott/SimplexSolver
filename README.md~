@@ -22,7 +22,7 @@ Consider the following objective function and constraints:
 This problem can be solved by running the script with the following parameters:
 
 ```sh
-$ python simplex.py -A "[[2,1],[1,2]]" -b "[4,3]" -c "[1,1]" -p max
+$ python simplex.py -A "[[2,1],[1,2]]" -b "[4,3]" -c "[1,1]" -p max
 ```
 
 ###### 2. Standard Form Minimization LP
