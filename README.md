@@ -41,10 +41,5 @@ This problem can be solved by running the script with the following parameters:
 $ python simplex.py -A "[[2,1],[1,1]]" -b "[6,4]" -c "[3,2]" -p min
 ```
 
-License
-----
-
-MIT
-
 [here]: <https://latexbase.com/>
 
