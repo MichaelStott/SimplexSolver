@@ -13,7 +13,8 @@ class SimplexSolverTest(unittest.TestCase):
             A =  |2 1|, b = |4|, c = |1|
                  |1 2|      |3|      |1|
 
-            Source: http://mat.gsia.cmu.edu/classes/QUANT/NOTES/chap7.pdf, Example 7.2.1
+            Source: http://mat.gsia.cmu.edu/classes/QUANT/NOTES/chap7.pdf
+                    Example 7.2.1
         '''
         self.assertDictEqual({'x1': Fraction(5,3),
                               'x2': Fraction(2,3),
@@ -33,7 +34,8 @@ class SimplexSolverTest(unittest.TestCase):
                  | 1 1|      |27|      |6|
                  | 2 5|      |90|
 
-            Source: http://college.cengage.com/mathematics/larson/elementary_linear/4e/shared/downloads/c09s3.pdf, Example 1
+            Source: http://college.cengage.com/mathematics/larson/elementary_linear/4e/shared/downloads/c09s3.pdf
+                    Example 1
         '''
         self.assertDictEqual({'x1': Fraction(15),
                               'x2': Fraction(12),
@@ -55,7 +57,8 @@ class SimplexSolverTest(unittest.TestCase):
                  |1 2 -2|      |20|      |-1|
                  |0 1  2|      | 5|      | 2|
 
-            Source: http://college.cengage.com/mathematics/larson/elementary_linear/4e/shared/downloads/c09s3.pdf, Example 2
+            Source: http://college.cengage.com/mathematics/larson/elementary_linear/4e/shared/downloads/c09s3.pdf
+                    Example 2
         '''
         self.assertDictEqual({'x1': Fraction(5),
                               'x2': Fraction(0),
@@ -78,7 +81,8 @@ class SimplexSolverTest(unittest.TestCase):
                  |2 3 1|      |60|      |2|
                  |1 2 3|      |40|      |1|
 
-            Source: http://college.cengage.com/mathematics/larson/elementary_linear/4e/shared/downloads/c09s3.pdf, Example 3
+            Source: http://college.cengage.com/mathematics/larson/elementary_linear/4e/shared/downloads/c09s3.pdf
+                    Example 3
         '''
         self.assertDictEqual({'x1': Fraction(3),
                               'x2': Fraction(18),
@@ -101,7 +105,8 @@ class SimplexSolverTest(unittest.TestCase):
                  |2/3 2/3  1 |      | 4600|      |16|
                  |1/2 1/3 1/2|      | 2400|      |15|
 
-            Source: http://college.cengage.com/mathematics/larson/elementary_linear/4e/shared/downloads/c09s3.pdf, Example 4
+            Source: http://college.cengage.com/mathematics/larson/elementary_linear/4e/shared/downloads/c09s3.pdf
+                    Example 4
         '''
         self.assertDictEqual({'x1': Fraction(600),
                               'x2': Fraction(5100),
@@ -128,7 +133,8 @@ class SimplexSolverTest(unittest.TestCase):
                  |-1 -1  1|      |  0|      | 18000|
                  |-9  1  1|      |  0|
 
-            Source: http://college.cengage.com/mathematics/larson/elementary_linear/4e/shared/downloads/c09s3.pdf, Example 5
+            Source: http://college.cengage.com/mathematics/larson/elementary_linear/4e/shared/downloads/c09s3.pdf
+                    Example 5
         '''
         self.assertDictEqual({'x1': Fraction(4),
                               'x2': Fraction(10),
@@ -146,81 +152,9 @@ class SimplexSolverTest(unittest.TestCase):
                                                           [100000,
                                                            40000,
                                                            18000]))
-    ''' STANDARD FORM MINIMIZATION PROBLEMS '''
+
     def test_min_feasible1(self):
-        ''' Find optimal solution to min(3x1 + 2x2) such that:         
-            Ax >= b,
-            x1, x2 >= 0,
-            A = |2, 1|, b = |6|, c = |3|
-                |1, 1|      |4|      |2|
+        pass
 
-            Source: http://college.cengage.com/mathematics/larson/elementary_linear/4e/shared/downloads/c09s4.pdf, Example 1
-        '''
-        self.assertDictEqual({'x1': Fraction(2),
-                              'x2': Fraction(2),
-                              's1': Fraction(0),
-                              's2': Fraction(0),
-                              'y1': Fraction(1),
-                              'y2': Fraction(1),
-                              'opt': Fraction(10)},
-                              SimplexSolver().run_simplex([[2,1],
-                                                           [1,1]],
-                                                          [6,4],
-                                                          [3,2],
-                                                          prob='min'))
-
-    def test_min_feasible2(self):
-        ''' Find optimal solution to min(2x1 + 10x2 + 8x3) such that:
-            Ax >= b,
-            x1, x2, x3 >= 0,
-            A = | 1 1 1|, b = |6|, c = | 2|
-                | 0 1 2|      |8|      |10|
-                |-1 2 2|      |4|      | 8|
-
-            Source: http://college.cengage.com/mathematics/larson/elementary_linear/4e/shared/downloads/c09s4.pdf, Example 2
-        '''
-        self.assertDictEqual({'x1': Fraction(2),
-                              'x2': Fraction(0),
-                              'x3': Fraction(4),
-                              's1': Fraction(0),
-                              's2': Fraction(5),
-                              's3': Fraction(0),
-                              'y1': Fraction(2),
-                              'y2': Fraction(3),
-                              'y3': Fraction(0),
-                              'opt': Fraction(36)},
-                              SimplexSolver().run_simplex([[1,1,1],
-                                                           [0,1,2],
-                                                           [-1,2,2]],
-                                                          [6,8,4],
-                                                          [2,10,8],
-                                                          prob='min'))
-
-    def test_min_feasible3(self):
-        ''' Find optimal solution to min(20000x1 + 25000x2) such that:
-            Ax >= b,
-            x1, x2 >= 0,
-            A = |400 300|, b = |25000|, c = |20000|
-                |300 400|      |27000|      |25000|
-                |200 500|      |30000|
-
-            Source: http://college.cengage.com/mathematics/larson/elementary_linear/4e/shared/downloads/c09s4.pdf, Example 3
-        '''
-        self.assertDictEqual({'x1': Fraction(25),
-                              'x2': Fraction(50),
-                              's1': Fraction(0),
-                              's2': Fraction(0),
-                              'y1': Fraction(250,7),
-                              'y2': Fraction(0),
-                              'y3': Fraction(200, 7),
-                              'opt': Fraction(1750000)},
-                              SimplexSolver().run_simplex([[400,300],
-                                                           [300,400],
-                                                           [200,500]],
-                                                          [25000,
-                                                           27000,
-                                                           30000],
-                                                          [20000,25000],
-                                                          prob='min'))
 if __name__ == '__main__':
     unittest.main()
