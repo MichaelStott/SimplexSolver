@@ -398,8 +398,8 @@ class SimplexSolver():
                      r"There are negative elements in the bottom row, "
                      r"so the current solution is not optimal. "
                      r"Thus, pivot to improve the current solution. The "
-                     r"entering variable is %s and the departing "
-                     r"variable is %s."
+                     r"entering variable is $%s$ and the departing "
+                     r"variable is $%s$."
                      r"\end{flushleft}" %
                      (str(self.entering[pivot[0]]),
                      str(self.departing[pivot[1]])))
