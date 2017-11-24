@@ -3,7 +3,7 @@
 Example code for solving linear equations using the simplex algorithm.
 
 - Provides step-by-step instrucitons for Simplex algorithm.
-- Outputs raw LaTeX file (WIP).
+- Outputs raw LaTeX file.
 
 LaTeX files can be compiled [here].
 
