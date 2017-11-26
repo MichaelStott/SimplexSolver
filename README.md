@@ -1,11 +1,13 @@
 # Simplex Solver
 
-Example code for solving linear equations using the simplex algorithm.
+Example code for solving linear equations using simplex.
 
-- Provides step-by-step instrucitons for Simplex algorithm.
+- Provides step-by-step instrucitons for solving LPs using simplex algorithm (tableau method).
 - Outputs raw LaTeX file.
 
 LaTeX files can be compiled [here].
+
+Note: Currently, only LPs in standard form are supported.
 
 ### Examples
 
