@@ -82,6 +82,7 @@ class SimplexSolver():
             self.tableau_doc()
 
         solution = self.get_current_solution()
+        self.final_solution_doc(solution)
         if (enable_msg):
             clear()
             self._print_tableau()
@@ -253,7 +254,7 @@ class SimplexSolver():
                                   [len(self.tableau[self.departing.index(x)])-1]
                 else:
                     solution[x] = 0
-        solution['opt'] = self.tableau[len(self.tableau) - 1]\
+        solution['z'] = self.tableau[len(self.tableau) - 1]\
                           [len(self.tableau[0]) - 1]
         
         # If this is a minimization problem...
@@ -300,7 +301,7 @@ class SimplexSolver():
                 opp = ''
             if x == 1 or x == -1:
                 x = ''
-            func += (r"%s %sx_%s "  % (opp, str(x), str(index)))
+            func += (r"%s %sx_%s "  % (opp, str(x), str(index+1)))
             found_value = True
         self.doc += (r"\max{%s} \\ "
                      r"\end{equation*}" % func)
@@ -389,11 +390,13 @@ class SimplexSolver():
         if not self.gen_doc:
             return
         self.doc += (r"\begin{flushleft}"
-                     r"There are no non-negative candiate for the pivot. "
+                     r"There are no non-negative candidates for the pivot. "
                      r"Thus, the solution is infeasible."
                      r"\end{flushleft}")
 
     def pivot_doc(self, pivot):
+        if not self.gen_doc:
+            return
         self.doc += (r"\begin{flushleft}"
                      r"There are negative elements in the bottom row, "
                      r"so the current solution is not optimal. "
@@ -405,12 +408,28 @@ class SimplexSolver():
                      str(self.departing[pivot[1]])))
         self.doc += (r"\begin{flushleft}"
                      r"Perform elementary row operations until the "
-                     r"pivot is one and all other elements in the "
-                     r"entering column are zero."
+                     r"pivot element is 1 and all other elements in the "
+                     r"entering column are 0."
                      r"\end{flushleft}")
+    
+    def current_solution_doc(self, solution):
+        if not self.gen_doc:
+            return
+        self.doc += r"\begin{equation*}"
+        for key,value in sorted(solution.items()):
+            self.doc += r"%s = %s" % (key, self._fraction_to_latex(value))
+            if key != 'z':
+                self.doc += r", "
+        self.doc += r"\end{equation*}"
 
-    def solution_doc(self):
-        pass
+    def final_solution_doc(self, solution):
+        if not self.gen_doc:
+            return
+        self.doc += (r"\begin{flushleft}"
+                     r"There are no negative elements in the bottom row, so "
+                     r"we know the solution is optimal. Thus, the solution is: "
+                     r"\end{flushleft}")
+        self.current_solution_doc(solution)
 
     def print_doc(self):
         if not self.gen_doc:
@@ -418,6 +437,12 @@ class SimplexSolver():
         self.doc += (r"\end{document}")
         with open("solution.tex", "w") as tex:
             tex.write(self.doc)
+
+    def _fraction_to_latex(self, fract):
+        if fract.denominator == 1:
+            return str(fract.numerator)
+        else:
+            return r"\frac{%s}{%s}" % (str(fract.numerator), str(fract.denominator))
 
     def _generate_identity(self, n):
         ''' Helper function for generating a square identity matrix.
@@ -477,11 +502,11 @@ if __name__ == '__main__':
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-h':
-            print('simplex.py -A <matrix> -b <vector> -c <vector>')
+            print('simplex.py -A <matrix> -b <vector> -c <vector> -p <obj_func_type>')
             print('A: Matrix that represents coefficients of constraints.')
             print('b: Ax <= b')
             print('c: Coefficients of objective function.')
-            print('p: max or min objective function.')
+            print('p: Indicates max or min objective function.')
             sys.exit()
         elif opt in ("-A"):
             A = ast.literal_eval(arg)
@@ -500,4 +525,4 @@ if __name__ == '__main__':
     if p not in ('max', 'min'):
         p = 'max'
     
-    SimplexSolver().run_simplex(A,b,c,prob=p,enable_msg=True,latex=True)
+    SimplexSolver().run_simplex(A,b,c,prob=p,enable_msg=False,latex=True)
