@@ -1,11 +1,13 @@
 # Simplex Solver
 
-Example code for solving linear equations using the simplex algorithm.
+Example code for solving linear equations using simplex.
 
-- Provides step-by-step instrucitons for Simplex algorithm.
+- Provides step-by-step instrucitons for solving LPs using simplex algorithm (tableau method).
 - Outputs raw LaTeX file.
 
 LaTeX files can be compiled [here].
+
+Note: Currently, only LPs in standard form are supported.
 
 ### Examples
 
@@ -40,10 +42,6 @@ This problem can be solved by running the script with the following parameters:
 ```sh
 $ python simplex.py -A "[[2,1],[1,1]]" -b "[6,4]" -c "[3,2]" -p min
 ```
-
-### Todo
-
-- Add support for nonstandard LP.
 
 [here]: <https://latexbase.com/>
 
