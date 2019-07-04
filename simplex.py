@@ -11,8 +11,8 @@ class SimplexSolver():
 
     # Table for converting inequality list to LaTeX    
     latex_ineq = {'=': '=',
-                  '<=': r'$\leq$',
-                  '>=': r'$\geq$'}
+                  '<=': r'\leq',
+                  '>=': r'\geq'}
 
     def __init__(self):
         self.A = []
