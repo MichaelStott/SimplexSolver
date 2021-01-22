@@ -47,8 +47,8 @@ class SimplexSolver():
             if(enable_msg):
                 clear()
                 self._print_tableau()
-                print("Current solution: %s\n" %
-                      str(self.get_current_solution()))
+                print(("Current solution: %s\n" %
+                      str(self.get_current_solution())))
                 self._prompt()
             
             # Attempt to find a non-negative pivot.
@@ -65,13 +65,13 @@ class SimplexSolver():
                 if (enable_msg):
                     clear()
                     self._print_tableau()
-                    print("\nThere are negative elements in the bottom row, "
+                    print(("\nThere are negative elements in the bottom row, "
                           "so the current solution is not optimal. "
                           "Thus, pivot to improve the current solution. The "
                           "entering variable is %s and the departing "
                           "variable is %s.\n" %
                            (str(self.entering[pivot[0]]),
-                           str(self.departing[pivot[1]])))
+                           str(self.departing[pivot[1]]))))
                     self._prompt()
                     print("\nPerform elementary row operations until the "
                           "pivot is one and all other elements in the "
@@ -86,7 +86,7 @@ class SimplexSolver():
         if (enable_msg):
             clear()
             self._print_tableau()
-            print("Current solution: %s\n" % str(solution))
+            print(("Current solution: %s\n" % str(solution)))
             print("That's all folks!")
         self.print_doc()
         return solution
@@ -462,29 +462,29 @@ class SimplexSolver():
         ''' Print some matrix.
         '''
         for row in M:
-            print '|',
+            print('|', end=' ')
             for val in row:
-                print '{:^5}'.format(str(val)),
-            print '|'
+                print('{:^5}'.format(str(val)), end=' ')
+            print('|')
 
     def _print_tableau(self):
         ''' Print simplex tableau.
         '''
-        print ' ',
+        print(' ', end=' ')
         for val in self.entering:
-            print '{:^5}'.format(str(val)),
-        print ' '
+            print('{:^5}'.format(str(val)), end=' ')
+        print(' ')
         for num, row in enumerate(self.tableau):
-            print '|',
+            print('|', end=' ')
             for index, val in enumerate(row):
-                print '{:^5}'.format(str(val)),
+                print('{:^5}'.format(str(val)), end=' ')
             if num < (len(self.tableau) -1):
-                print '| %s' % self.departing[num]
+                print('| %s' % self.departing[num])
             else:
-                print '|'
+                print('|')
 
     def _prompt(self):
-        raw_input("Press enter to continue...")
+        input("Press enter to continue...")
 
 if __name__ == '__main__':
     clear()
