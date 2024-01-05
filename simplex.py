@@ -375,7 +375,7 @@ class SimplexSolver():
                 elif indexr != (len(self.tableau)-2):
                     self.doc += r"%s \\" % (str(value))
                 else:
-                    self.doc += r"%s \\ \hline" % (str(value))
+                    self.doc += r"%s \\ \hline" % (str(value))
         self.doc += r"\end{array}"
         self.doc += r"\end{bmatrix}"
         self.doc += (r"\begin{array}{c}"
